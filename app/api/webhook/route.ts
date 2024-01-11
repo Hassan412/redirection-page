@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
   if (event.type === "checkout.session.completed") {
     try {
-      const order = await axios.post("http://localhost:3000/api/webhook", {
+      const order = await axios.post(`${process.env.NEXT_PUBLIC_MAIN_URL}/api/webhook`, {
         id: session?.metadata?.orderId,
         isPaid: true,
         name: session?.customer_details?.name || "",

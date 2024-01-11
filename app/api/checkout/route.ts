@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     },
   ];
 
-  const Order = await axios.post("http://localhost:3000/api/checkout", {
+  const Order = await axios.post(`${process.env.NEXT_PUBLIC_MAIN_URL}/api/checkout`, {
     API_KEY,
     OrderId,
     ServiceName,
