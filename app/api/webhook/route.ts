@@ -22,19 +22,19 @@ export async function POST(req: Request) {
 
   const session = event.data.object as Stripe.Checkout.Session;
 
-  if (event.type === "checkout.session.completed") {
-    try {
-      const order = await axios.post(`${process.env.NEXT_PUBLIC_MAIN_URL}/api/webhook`, {
-        id: session?.metadata?.orderId,
-        isPaid: true,
-        name: session?.customer_details?.name || "",
-        email: session?.customer_details?.email || "",
-      });
-      return NextResponse.json(order);
-    } catch (error) {
-      return new NextResponse(error, { status: 450 });
-    }
+if (event.type === "checkout.session.completed") {
+  try {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_MAIN_URL}/api/webhook`, {
+      id: session?.metadata?.orderId,
+      isPaid: true,
+      name: session?.customer_details?.name || "",
+      email: session?.customer_details?.email || "",
+    });
+    return NextResponse.json(response.data);
+  } catch (error) {
+    return new NextResponse(error, { status: 450 });
   }
+}
 
   return new NextResponse(null, { status: 200 });
 }
