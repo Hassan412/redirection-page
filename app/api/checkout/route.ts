@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import limitDecimalPlaces from "@/actions/limit-number-decimal";
 import { stripe } from "@/lib/stripe";
 import axios from "axios";
+import { headers } from "next/headers";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": process.env.NEXT_PUBLIC_MAIN_URL,
@@ -21,7 +22,8 @@ export async function OPTIONS() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { OrderTotal, API_KEY, OrderId, ServiceName, Email } = body;
+
+  const { OrderTotal, API_KEY, OrderId, ServiceName, Email, OriginUrl } = body;
 
   if (!API_KEY) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -40,17 +42,24 @@ export async function POST(req: Request) {
     },
   ];
 
-  const Order = await axios.post(`${process.env.NEXT_PUBLIC_MAIN_URL}/api/checkout`, {
-    API_KEY,
-    OrderId,
-    ServiceName,
-    OrderTotal
-  });
+  const Order = await axios.post(
+    `${process.env.NEXT_PUBLIC_MAIN_URL}/api/checkout`,
+    {
+      API_KEY,
+      OrderId,
+      ServiceName,
+      OrderTotal,
+    }
+  );
   const session = await stripe.checkout.sessions.create({
     line_items,
     mode: "payment",
-    success_url: `${process.env.FRONTEND_URL}?success=1`,
-    cancel_url: `${process.env.FRONTEND_URL}?canceled=1`,
+    success_url: `${
+      process.env.FRONTEND_URL
+    }/api/success?origin=${encodeURIComponent(OriginUrl)}`,
+    cancel_url: `${
+      process.env.FRONTEND_URL
+    }/api/cancel?origin=${encodeURIComponent(OriginUrl)}`,
     customer_email: Email,
     metadata: {
       orderId: Order?.data?.order?.id,
