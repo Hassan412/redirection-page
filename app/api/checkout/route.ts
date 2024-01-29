@@ -3,22 +3,6 @@ import { NextResponse } from "next/server";
 import limitDecimalPlaces from "@/actions/limit-number-decimal";
 import { stripe } from "@/lib/stripe";
 import axios from "axios";
-import { headers } from "next/headers";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": process.env.NEXT_PUBLIC_MAIN_URL,
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
-};
-
-export async function OPTIONS() {
-  return NextResponse.json(
-    {},
-    {
-      headers: corsHeaders,
-    }
-  );
-}
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -48,28 +32,19 @@ export async function POST(req: Request) {
       API_KEY,
       OrderId,
       ServiceName,
-      OrderTotal,
+      OrderTotal: parseInt(OrderTotal),
     }
   );
   const session = await stripe.checkout.sessions.create({
     line_items,
     mode: "payment",
-    success_url: `${
-      process.env.FRONTEND_URL
-    }/api/success?origin=${encodeURIComponent(OriginUrl)}`,
-    cancel_url: `${
-      process.env.FRONTEND_URL
-    }/api/cancel?origin=${encodeURIComponent(OriginUrl)}`,
+    success_url: `${process.env.FRONTEND_URL}/create-order?success=1`,
+    cancel_url: `${process.env.FRONTEND_URL}/create-order?canceled=1`,
     customer_email: Email,
     metadata: {
       orderId: Order?.data?.order?.id,
     },
   });
 
-  return NextResponse.json(
-    { url: session.url, id: Order?.data?.order?.id },
-    {
-      headers: corsHeaders,
-    }
-  );
+  return NextResponse.json({ url: session.url, id: Order?.data?.order?.id });
 }
