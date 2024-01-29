@@ -1,6 +1,3 @@
-import getStripeUrl from "@/actions/getStripeUrl";
-import axios from "axios";
-import { redirect } from "next/navigation";
 import Payment from "./components/payment";
 
 export default async function CreaterOrderPage({
@@ -13,9 +10,15 @@ export default async function CreaterOrderPage({
     ServiceName: string;
     Email: string;
     OriginUrl: string;
+    success: string;
+    canceled: string;
   };
 }) {
-  if (!searchParams.OrderId) {
+  if (
+    !searchParams.OrderId ||
+    !searchParams.success ||
+    !searchParams.canceled
+  ) {
     return (
       <div className="flex h-screen items-center justify-center">
         <h1 className="text-4xl font-semibold">Page Not Found</h1>
