@@ -27,7 +27,7 @@ const Payment: React.FC<PaymentProps> = ({ params }) => {
   }, [params]);
   useEffect(() => {
     const OriginUrl = localStorage.getItem("OriginUrl");
-    if (searchParams.get("canceled")) {
+    if (searchParams.get("canceled") && OriginUrl) {
       window.location.href = OriginUrl;
     }
     if (searchParams.get("success")) {
