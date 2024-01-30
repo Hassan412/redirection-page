@@ -15,8 +15,8 @@ export default async function CreaterOrderPage({
   };
 }) {
   if (
-    !searchParams.OrderId ||
-    !searchParams.success ||
+    !searchParams.OrderId &&
+    !searchParams.success &&
     !searchParams.canceled
   ) {
     return (
