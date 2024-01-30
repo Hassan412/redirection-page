@@ -30,7 +30,7 @@ const Payment: React.FC<PaymentProps> = ({ params }) => {
     if (searchParams.get("canceled") && OriginUrl) {
       window.location.href = OriginUrl;
     }
-    if (searchParams.get("success")) {
+    if (searchParams.get("success") && OriginUrl) {
       window.location.href = `${process.env.NEXT_PUBLIC_MAIN_URL}/track-order`;
     }
   }, [searchParams]);
