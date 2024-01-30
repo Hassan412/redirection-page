@@ -42,7 +42,7 @@ const PricingBox = (props: {
         <p className="mb-7 text-base text-body-color">{subtitle}</p>
         <PriceSlider setValue={setValue} />
         <div className="mb-8 border-b border-body-color border-opacity-10 pb-8 dark:border-white dark:border-opacity-10">
-          <button onClick={handleButtonClick} className="flex w-full items-center justify-center rounded-lg bg-primary p-3 text-base font-semibold text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
+          <button disabled={value == 0} onClick={handleButtonClick} className="flex w-full items-center justify-center rounded-lg bg-primary p-3 text-base font-semibold text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
             Purchase
           </button>
         </div>
