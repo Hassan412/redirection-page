@@ -11,10 +11,12 @@ interface PaymentProps {
 
 const Payment: React.FC<PaymentProps> = ({ params }) => {
   const searchParams = useSearchParams();
+
   useEffect(() => {
     if (params) {
       const handleButtonClick = async () => {
         try {
+          delete params.OriginUrl;
           const data = await axios.post("/api/checkout", params);
           localStorage.setItem("OriginUrl", params?.OriginUrl);
           window.location.href = data.data.url;
@@ -27,10 +29,10 @@ const Payment: React.FC<PaymentProps> = ({ params }) => {
   }, [params]);
   useEffect(() => {
     const OriginUrl = localStorage.getItem("OriginUrl");
-    if (searchParams.get("canceled")) {
+    if (searchParams.get("canceled") && OriginUrl) {
       window.location.href = OriginUrl;
     }
-    if (searchParams.get("success")) {
+    if (searchParams.get("success") && OriginUrl) {
       window.location.href = `${process.env.NEXT_PUBLIC_MAIN_URL}/track-order`;
     }
   }, [searchParams]);
