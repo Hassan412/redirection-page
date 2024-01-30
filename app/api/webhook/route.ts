@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!,
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (error) {
     return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
@@ -22,7 +22,10 @@ export async function POST(req: Request) {
 
   const session = event.data.object as Stripe.Checkout.Session;
 
-  if (event.type === "checkout.session.completed") {
+  if (
+    event.type === "checkout.session.completed" &&
+    session?.metadata?.orderId
+  ) {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_MAIN_URL}/api/webhook`,
@@ -31,7 +34,7 @@ export async function POST(req: Request) {
           isPaid: true,
           name: session?.customer_details?.name || "",
           email: session?.customer_details?.email || "",
-        },
+        }
       );
       await axios.post(`${process.env.NEXT_PUBLIC_MAIN_URL}/api/send`, {
         Order: response.data,

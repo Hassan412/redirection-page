@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PriceSlider from "../silderDiagConponent/PriceSlider";
+import axios from "axios";
 
 const PricingBox = (props: {
   price: string;
@@ -11,7 +12,18 @@ const PricingBox = (props: {
   const { price, duration, packageName, subtitle, children } = props;
   const [value, setValue] = useState(0);
 
- 
+  const handleButtonClick = async (e) => {
+    try {
+      const data = await axios.post("/api/checkout", {
+        OrderTotal: value,
+        API_KEY: process.env.NEXT_PUBLIC_API_KEY
+      });
+
+      window.location.href = data.data.url;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="w-full">
       <div
@@ -30,7 +42,7 @@ const PricingBox = (props: {
         <p className="mb-7 text-base text-body-color">{subtitle}</p>
         <PriceSlider setValue={setValue} />
         <div className="mb-8 border-b border-body-color border-opacity-10 pb-8 dark:border-white dark:border-opacity-10">
-          <button className="flex w-full items-center justify-center rounded-lg bg-primary p-3 text-base font-semibold text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
+          <button onClick={handleButtonClick} className="flex w-full items-center justify-center rounded-lg bg-primary p-3 text-base font-semibold text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
             Purchase
           </button>
         </div>

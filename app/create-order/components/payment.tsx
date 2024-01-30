@@ -16,7 +16,6 @@ const Payment: React.FC<PaymentProps> = ({ params }) => {
     if (params) {
       const handleButtonClick = async () => {
         try {
-          delete params.OriginUrl;
           const data = await axios.post("/api/checkout", params);
           localStorage.setItem("OriginUrl", params?.OriginUrl);
           window.location.href = data.data.url;
