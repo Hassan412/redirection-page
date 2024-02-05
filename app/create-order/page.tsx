@@ -26,7 +26,7 @@ export default async function CreaterOrderPage({
     );
   }
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-8">
+    <div className="flex h-screen flex-col items-center justify-center gap-8 text-center">
       <h1 className="text-3xl font-semibold">
         Thank you! We are redirecting you to the payment page...
       </h1>
